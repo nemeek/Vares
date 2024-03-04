@@ -6,6 +6,13 @@ lemmatizer.py <infile> <outfile>
 
 import argparse
 
+from estnltk import Text
+
+def lemmatize(text: Text):
+    text = Text(text)
+    text.tag_layer(['words', 'morph_analysis')
+    return text.words
+
 def returnparser():
     parser = argparse.ArgumentParser(
         description='Lemmatize infile text to outfile')
