@@ -10,7 +10,7 @@ from estnltk import Text
 
 def lemmatize(text: Text):
     text = Text(text)
-    text.tag_layer(['words', 'morph_analysis')
+    text.tag_layer(['words', 'morph_analysis'])
     return text.words
 
 def returnparser():
