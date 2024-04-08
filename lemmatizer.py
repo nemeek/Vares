@@ -8,10 +8,16 @@ import argparse
 
 from estnltk import Text
 
+def variants(sisu: list) -> list:
+    out = list(set(sisu))
+    return ['|'.join(out)]
+
 def lemmatize(text: Text):
     text = Text(text)
     text.tag_layer(['words', 'morph_analysis'])
-    return text.words
+    lemmas = [list(x.lemma) for x in list(text.words)]
+    lemmas = [variants(x) for x in lemmas]
+    return lemmas
 
 def returnparser():
     parser = argparse.ArgumentParser(
@@ -23,6 +29,12 @@ def returnparser():
 
 def main(p: argparse.ArgumentParser):
     args = p.parse_args()
+    with open(args.infile, 'r') as f:
+        sisu = f.read()
+    print(sisu)
+    lemlist = lemmatize(sisu)
+    print(' '.join([x[0] for x in lemlist]))
+    print(len(lemlist))
 
 
 if __name__ == '__main__':
