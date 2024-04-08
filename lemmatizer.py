@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 """
+Teeb sisendfailist väljundfaili, kus iga sõna on asendatud lemmaga.
+
+Lemmatiseerija ei tee mingit ühestamist, kui lemma on mitmene, siis
+jätakse kõik variandid sisse, eraldatakse püstkriipsuga (`|`).
+
+Eeldab installeeritud ja töötavat `estnltk` moodulit (https://estnltk.github.io/).
+
+Kasutus:
+./lemmatizer.py <infile> <outfile>
+
 Usage:
 lemmatizer.py <infile> <outfile>
 """
@@ -12,11 +22,17 @@ def variants(sisu: list) -> list:
     out = list(set(sisu))
     return ['|'.join(out)]
 
-def lemmatize(text: Text):
+def lemmatize(text: Text) -> list:
+    """
+
+    :param text: Sisendtekst estnltk Text väärtusena
+    :return: list, mille iga liige on string, mis sisaldab parjasti
+    ühe lemma või mitu lemmat, mis on omavahel eraldatud püstkriipsuga (|)
+    """
     text = Text(text)
     text.tag_layer(['words', 'morph_analysis'])
     lemmas = [list(x.lemma) for x in list(text.words)]
-    lemmas = [variants(x) for x in lemmas]
+    lemmas = [variants(x)[0] for x in lemmas]
     return lemmas
 
 def returnparser():
@@ -33,8 +49,9 @@ def main(p: argparse.ArgumentParser):
         sisu = f.read()
     print(sisu)
     lemlist = lemmatize(sisu)
-    print(' '.join([x[0] for x in lemlist]))
-    print(len(lemlist))
+    out = ' '.join(lemlist)
+    with open(args.outfile, 'w') as of:
+        of.write(out)
 
 
 if __name__ == '__main__':
